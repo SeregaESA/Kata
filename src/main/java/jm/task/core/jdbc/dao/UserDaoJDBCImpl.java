@@ -15,7 +15,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS Users (\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS users (\n" +
                 "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
                 "    name VARCHAR(45) NOT NULL,\n" +
                 "    lastName VARCHAR(45) NOT NULL,\n" +
@@ -29,7 +29,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        String sql = "DROP TABLE IF EXISTS Users";
+        String sql = "DROP TABLE IF EXISTS users";
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
@@ -67,12 +67,11 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sgl);
             while (resultSet.next()) {
-                User users = new User();
-                users.setId((long) resultSet.getInt("id"));
-                users.setName(resultSet.getString("name"));
-                users.setLastName(resultSet.getString("lastName"));
-                users.setAge((byte) resultSet.getInt("age"));
-                usersList.add(users);
+                long id = resultSet.getLong("id");
+                String name = resultSet.getString("name");
+                String lastName = resultSet.getString("lastName");
+                byte age = resultSet.getByte("age");
+                usersList.add(new User(id, name, lastName, age));
             }
         } catch (SQLException e) {
             e.printStackTrace();
